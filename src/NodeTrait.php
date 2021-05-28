@@ -677,7 +677,7 @@ trait NodeTrait
             ? $this->withTrashed()
             : $this->newQuery();
 
-        return $this->applyNestedSetScope($builder, $table);
+        return $this->applyNestedSetScope($builder->withoutGlobalScopes(), $table);
     }
 
     /**
@@ -687,7 +687,7 @@ trait NodeTrait
      */
     public function newScopedQuery($table = null)
     {
-        return $this->applyNestedSetScope($this->newQuery(), $table);
+        return $this->applyNestedSetScope($this->newQueryWithoutScopes(), $table);
     }
 
     /**
@@ -1178,8 +1178,8 @@ trait NodeTrait
      */
     protected function assertNodeExists(self $node)
     {
-        if ( ! $node->getLft() || ! $node->getRgt()) {
-            throw new LogicException('Node must exists.');
+        if ( is_null($node->getLft()) || is_null($node->getRgt()) ) {
+            throw new LogicException('Node must exist.');
         }
 
         return $this;
